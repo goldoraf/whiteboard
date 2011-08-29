@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Whiteboard sharing demo</title>
+        <meta charset="utf-8" />
+        <style type="text/css">
+            #container { position: relative; }
+            #whiteboard { border: 1px solid #ccc; }
+            #whiteboard_temp { cursor: crosshair; position: absolute; top: 1px; left: 1px; }
+            #chat { height: 300px; overflow: auto; width: 100%; border: 1px solid #ccc; font: 13px Helvetica, Arial; }
+            #chat p { padding: 8px; margin: 0; }
+            #chat p:nth-child(odd) { background: #F6F6F6; }
+            #form { width: 97%; background: #333; padding: 5px 10px; display: none; }
+            #form input[type=text] { width: 80%; padding: 5px; background: #fff; border: 1px solid #fff; }
+            #form input[type=submit] { cursor: pointer; background: #999; border: none; padding: 6px 8px; -moz-border-radius: 8px; -webkit-border-radius: 8px; margin-left: 5px; text-shadow: 0 1px 0 #fff; }
+            #form input[type=submit]:hover { background: #A2A2A2; }
+            #form input[type=submit]:active { position: relative; top: 2px; }
+        </style>
+        <script src="/json.js"></script> <!-- for ie -->
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="/handler.js"></script>
+        <script src="/chat.js"></script>
+        <script src="/whiteboard.js"></script>
+        
+        <script type="text/javascript">
+            if(window.addEventListener) {
+                window.addEventListener('load', function () {
+                    io.setPath('/socket.io/');
+                    var socket = new io.Socket(null, {port: 8084});
+                    socket.connect();
+                    var handler = new SocketHandler(socket);
+                    var chat = new Chat(handler);
+                    var wb   = new Whiteboard(handler);
+                });
+            }
+        </script>
+    </head>
+    <body>
+        <p><label>Drawing tool: <select id="tool">
+              <option value="pencil">Pencil</option>
+              <option value="rect">Rectangle</option>
+              <option value="line">Line</option>
+            </select></label></p>
+        <div id="container">
+            <canvas id="whiteboard" width="500px" height="300px">
+            
+            </canvas>
+        </div>
+        <div id="chat"><p>Connecting...</p></div>
+        <form id="form">
+            <input type="text" autocomplete="off" id="text"><input type="submit" value="Send">
+        </form>
+    </body>
+</html>
